@@ -1,8 +1,7 @@
-# Redis Movie Search
+# Redis Query Engine Demo
 
 **Two Complementary Search Approaches: Traditional + Vector**
-
-Demonstrate Redis's versatility from traditional keyword queries to vector-based semantic search.
+Demonstrate Redis's versatility as both a traditional and vector DB.
 
 ## Two Demo Flows
 
