@@ -1,3 +1,6 @@
+"""
+redis connection configuration
+"""
 import os
 from dotenv import load_dotenv
 import redis
@@ -5,16 +8,20 @@ import redis
 load_dotenv()
 
 class RedisConfig:
-    """Configuration for Redis Cloud connection"""
+    """
+    redis connection configuration from environment variables
+    """
     
-    def __init__(self):
+    def __init__(self, decode_responses=False):
         self.host = os.getenv('REDIS_HOST', 'localhost')
         self.port = int(os.getenv('REDIS_PORT', 6379))
         self.password = os.getenv('REDIS_PASSWORD', '')
-        self.decode_responses = True
+        self.decode_responses = decode_responses
         
     def get_client(self):
-        """Get Redis client instance"""
+        """
+        create redis client with configured settings
+        """
         return redis.Redis(
             host=self.host,
             port=self.port,
@@ -23,7 +30,9 @@ class RedisConfig:
         )
         
     def test_connection(self):
-        """Test Redis connection"""
+        """
+        test redis connection
+        """
         try:
             client = self.get_client()
             client.ping()

@@ -1,6 +1,9 @@
 # Environment variables
 .env
 
+# Self-Learning Docs:
+docs/
+
 # Python
 __pycache__/
 *.py[cod]

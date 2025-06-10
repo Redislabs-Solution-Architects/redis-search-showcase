@@ -1,86 +1,91 @@
 # Redis Movie Search
 
-A Python application to download movie data and load it into Redis Cloud with search capabilities.
+**Two Complementary Search Approaches: Traditional + Vector**
 
-## What This Does
+Demonstrate Redis's versatility from traditional keyword queries to vector-based semantic search.
 
-1. Loads movie and actor data into your Redis Cloud database
-2. Creates RediSearch indexes for fast querying
-3. Provides a command-line interface for search
+## Two Demo Flows
 
-## Prerequisites
+### Flow 1: Traditional Search Demo **Keyword syntax** 
+- Setup: Movies + RediSearch indexes
+- Capabilities: Field matching, ranges, sorting
+- Example: `@genre:{Action} @rating:[8 +inf]`
+- **Value**: Redis as a powerful search database
 
-- Python 3.8+
-- Redis Cloud account with RediSearch module enabled
+### Flow 2: Vector Search Demo  
+**Embedding-based semantic search** - Natural language with HNSW vectors  
+- Setup: Movies + embeddings + vector index
+- Capabilities: Semantic + Hybrid search
+- Examples:
+  - Semantic: `space adventure with aliens`
+  - Hybrid: `superhero movie | genre:Action year>2010`
+- **Value**: Redis with vector semantic search!
+
+
+## Code Structure
+- `src/core/` - Redis config, embeddings, index schemas  
+- `src/data/` - Data loading and index creation
+- `src/search/` - Traditional, semantic, and vector search
+- `src/utils/` - As the name implies
 
 ## Quick Start
 
-### 1. Clone and Setup
-
+### 1. Setup
 ```bash
+git clone <repo>
 cd redis-movie-search
 pip3 install -r requirements.txt
-```
 
-### 2. Configure Redis Connection
-
-Copy the example environment file and add your Redis Cloud credentials:
-
-```bash
+# Configure Redis connection
 cp .env.example .env
+# Edit .env with your Redis credentials
 ```
 
-Edit `.env` with your Redis Cloud details:
-```
-REDIS_HOST=your-redis-cloud-endpoint.redis-cloud.com
-REDIS_PORT=16379
-REDIS_PASSWORD=your-redis-cloud-password
-```
-
-### 3. Run Setup
-
+### 2. Choose Your Demo Flow
 ```bash
-python3 src/main.py setup
+python3 run.py setup
 ```
 
-This will show an interactive menu:
-- **Option 1**: Full setup (load data + create indexes)
-- **Option 2**: Load data only
-- **Option 3**: Create indexes only
-- **Option 4**: Exit
-
-The setup will:
-- Load ~2,200 movies and ~1,100 actors into Redis
-- Create search indexes for fast querying
-
-### 4. Search
-
+### 3. Run the Demo
 ```bash
-python3 src/search.py
+# Flow 1: Database syntax
+python3 run.py search-basic
+
+# Flow 2: Natural language  
+python3 run.py search-advanced
 ```
 
-Then enter FT.SEARCH commands. See `SEARCH_EXAMPLES.md` for comprehensive examples.
+## Examples
 
-## How It Works
-
-1. **Data Source**: Movie data from Redis's sample datasets (included in `data/` folder)
-2. **Storage**: Data is stored as Redis Hashes (movie:* and actor:* keys)
-3. **Indexing**: RediSearch creates full-text indexes on titles, plots, names, etc.
-4. **Search**: Uses Redis Query Engine for fast text search
-
-## Project Structure
-
+### Keyword Search (Flow 1)
+Traditional keyword syntax with precise field matching:
+```bash
+@genre:{Action} @rating:[8 +inf]
+@title:star wars
+@release_year:[2010 2020] SORTBY rating DESC
+@genre:{Comedy} @rating:[7 10] LIMIT 0 5
 ```
-redis-movie-search/
-├── src/
-│   ├── config.py         # Redis connection config
-│   ├── load_data.py      # Loads data efficiently using redis-cli
-│   ├── create_index.py   # Creates RediSearch indexes
-│   ├── search.py         # Interactive CLI search interface
-│   └── main.py          # Main orchestrator
-├── data/                 # Movie dataset (Redis commands)
-│   ├── import_movies.redis
-│   └── import_actors.redis
-├── requirements.txt      # Python dependencies
-└── .env                 # Your Redis credentials
+
+### Hybrid Search (Flow 2)  
+Embedding-based semantic search with natural language queries:
+
+**Semantic (vector similarity):**  
+```bash
+space adventure with aliens
+romantic comedy in Paris
+movies about time travel
+psychological thriller
 ```
+
+**Hybrid (vector + traditional filters):**
+```bash
+superhero movie | genre:Action year>2010
+comedy | rating>7.5 year>2015
+space adventure | year<2000
+```
+
+## Requirements
+
+- Python 3.8+
+- Redis Stack (RediSearch + Vector support)
+- 1GB RAM for embeddings
