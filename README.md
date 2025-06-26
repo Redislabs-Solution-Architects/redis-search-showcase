@@ -40,7 +40,7 @@ cp .env.example .env
 # Edit .env with your Redis credentials
 ```
 
-### 2. Choose Your Demo Flow
+### 2. Seed Data + Setup
 ```bash
 python3 run.py setup
 ```
